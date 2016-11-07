@@ -21,7 +21,7 @@
     "url": "https://github.com/vishwaabhinav/xkcd-pwa/issues"
   },
   "homepage": "https://github.com/vishwaabhinav/xkcd-pwa#readme",
-  "devDependencies": {
+  "dependencies": {
     "express": "^4.14.0",
     "path": "^0.12.7",
     "request": "^2.78.0"
