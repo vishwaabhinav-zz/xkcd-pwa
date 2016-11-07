@@ -21,6 +21,6 @@ app.get('/latest', (req, res) => {
   });
 });
 
-app.listen(PORT, () {
+app.listen(PORT, () => {
   console.log(`xkcd-pwa is running on port ${PORT}`);
 });
