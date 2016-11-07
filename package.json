@@ -22,8 +22,10 @@
   },
   "homepage": "https://github.com/vishwaabhinav/xkcd-pwa#readme",
   "dependencies": {
+    "bottleneck": "^1.15.0",
     "express": "^4.14.0",
     "path": "^0.12.7",
-    "request": "^2.78.0"
+    "request": "^2.78.0",
+    "request-promise": "^4.1.1"
   }
 }
