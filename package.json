@@ -1,0 +1,28 @@
+{
+  "name": "xkcd-pwa",
+  "version": "0.0.1",
+  "description": "PWA for xkcd.com",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vishwaabhinav/xkcd-pwa.git"
+  },
+  "keywords": [
+    "pwa",
+    "xkcd"
+  ],
+  "author": "Abhinav Vishwa",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/vishwaabhinav/xkcd-pwa/issues"
+  },
+  "homepage": "https://github.com/vishwaabhinav/xkcd-pwa#readme",
+  "devDependencies": {
+    "express": "^4.14.0",
+    "path": "^0.12.7",
+    "request": "^2.78.0"
+  }
+}
