@@ -4,6 +4,7 @@ const http = require('http');
 const request = require('request');
 const app = express();
 
+const PORT = process.env.PORT || 3000;
 const XKCD = 'http://xkcd.com/';
 
 app.use(express.static('static'))
@@ -20,4 +21,6 @@ app.get('/latest', (req, res) => {
   });
 });
 
-app.listen(3000);
+app.listen(PORT, () {
+  console.log(`xkcd-pwa is running on port ${PORT}`);
+});
