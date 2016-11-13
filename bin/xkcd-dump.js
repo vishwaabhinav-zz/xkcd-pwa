@@ -2,26 +2,38 @@
 
 const Bottleneck = require("bottleneck");
 const request = require('request-promise');
-// const request = limiter(require('request-promise')).to(2).per(1000);
+const mp = require('mongodb-promise');
 
-var limiter = new Bottleneck(1000, 10);
+var limiter = new Bottleneck(1000, 5);
 
 const XKCD = 'http://xkcd.com/';
 const JSON_URL = 'info.0.json';
 var data = {};
 var promiseArr = [];
 
+function _insert(json) {
+  mp.MongoClient.connect('mongodb://localhost:27017/xkcd')
+    .then(db => {
+      return db.collection('records')
+        .then(col => col.insert(json))
+        .then(result => {
+          console.log(result);
+          db.close()
+            .then(console.log('success'));
+        });
+    })
+    .fail(err => console.log(err));
+}
+
 function _getLatest(json) {
-  // console.log(json);
-  data[json.num] = json;
+  _insert(json);
   return json.num;
 }
 
 function _createCache(num) {
   let promise = _fetchJSON(num)
     .then(json => {
-      // console.log(json);
-      data[json.num] = json;
+      _insert(json);
     });
   promiseArr.push(promise);
   return promise;
@@ -31,7 +43,7 @@ function _getAll(latest) {
   for (var i = 1; i < latest; i++) {
     limiter.schedule(_createCache, i)
       .catch(err => {
-        console.log(err);
+        console.log(err.message);
       });
   }
 
@@ -53,9 +65,5 @@ _fetchJSON()
   .then(arr => console.log(arr))
   .catch(err => {
     console.log(data);
-    console.error(err);
+    console.error(err.message);
   });
-
-module.exports = function _getXKCD() {
-  return data;
-};
