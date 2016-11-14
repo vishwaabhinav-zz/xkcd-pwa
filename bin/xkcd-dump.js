@@ -10,7 +10,6 @@ var limiter = new Bottleneck(1000, 5);
 
 const XKCD = 'http://xkcd.com/';
 const JSON_URL = 'info.0.json';
-var data = {};
 var promiseArr = [];
 
 function _insert(json) {
