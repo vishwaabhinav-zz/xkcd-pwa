@@ -14,7 +14,7 @@ var data = {};
 var promiseArr = [];
 
 function _insert(json) {
-  mp.MongoClient.connect('mongodb://heroku_97mjvv9b:aVishwa1@ds145997.mlab.com:45997/heroku_97mjvv9b')
+  mp.MongoClient.connect('mongodb://heroku_97mjvv9b:l7qh0eg92ln8echsl6no1e6en0@ds145997.mlab.com:45997/heroku_97mjvv9b')
     .then(db => {
       return db.collection('records')
         .then(col => col.insert(json))
