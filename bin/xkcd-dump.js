@@ -1,5 +1,7 @@
 #! /usr/bin/env node
 
+'use strict';
+
 const Bottleneck = require("bottleneck");
 const request = require('request-promise');
 const mp = require('mongodb-promise');
