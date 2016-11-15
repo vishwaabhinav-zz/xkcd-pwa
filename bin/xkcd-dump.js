@@ -53,7 +53,10 @@ function _insert(json) {
 }
 
 function _getLatest(json) {
-  _insert(json);
+  _checkIfExists(json)
+    .then(_insert)
+    .catch(err => console.log(err.message));
+
   return json.num;
 }
 
