@@ -73,7 +73,6 @@ body {
 
 .post {
     padding: 10px 20px 0px;
-    height: 300px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -95,7 +94,7 @@ body {
 .post .img {
     background: url(http://placehold.it/350x150);
     flex: 2 1 0px;
-    height: 85%;
+    max-width: 90%;
     border: 1px dotted;
 }
 

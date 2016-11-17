@@ -6,7 +6,7 @@ const Bottleneck = require("bottleneck");
 const request = require('request-promise');
 const mp = require('mongodb-promise');
 
-var limiter = new Bottleneck(100000, 10);
+var limiter = new Bottleneck(1000, 15);
 
 const XKCD = 'http://xkcd.com/';
 const JSON_URL = 'info.0.json';
@@ -27,41 +27,28 @@ mp.MongoClient.connect('mongodb://heroku_97mjvv9b:l7qh0eg92ln8echsl6no1e6en0@ds1
       });
   }).fail(err => console.log(err));
 
-function _checkIfExists(json) {
-  return db.collection('records')
-    .then(col => col.find({
-      'num': json.num
-    }).toArray())
-    .then(items => {
-      if (items.length) {
-        return Promise.reject('already exists');
-      } else {
-        return Promise.resolve(json);
-      }
-    });
-}
-
 function _insert(json) {
-  console.log(json.num);
+  // console.log(json.num);
   return db.collection('records')
-    .then(col => col.insert(json))
+    .then(col => col.update({
+      'num': json.num
+    }, json, {
+      upsert: true
+    }))
     .then(result => {
       console.log(result);
-      db.close()
-        .then(console.log('success'));
     });
 }
 
 function _getLatest(json) {
-  _checkIfExists(json)
-    .then(_insert)
+  _insert(json)
     .catch(err => console.log(err.message));
 
   return json.num;
 }
 
 function _createCache(num) {
-  return _fetchJSON(num).then(_checkIfExists).then(_insert);
+  return _fetchJSON(num).then(_insert);
 }
 
 function _getAll(latest) {
@@ -72,7 +59,10 @@ function _getAll(latest) {
       }.bind(i));
   }
 
-  return Promise.all(promiseArr);
+  limiter.on('empty', () => {
+    db.close();
+  });
+
 }
 
 function _fetchJSON(num) {
