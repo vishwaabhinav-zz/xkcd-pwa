@@ -29,7 +29,7 @@ app.get('/latest', (req, res) => {
 app.get('/all', (req, res) => {
   db.collection('records').then(col => {
     col.find().sort({
-        "num": 1
+        "num": -1
       }).toArray()
       .then(items => res.json(items));
   });
