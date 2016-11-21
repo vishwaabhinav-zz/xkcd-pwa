@@ -11,10 +11,12 @@ const XKCD = 'http://xkcd.com/';
 const dbstr = 'mongodb://heroku_97mjvv9b:l7qh0eg92ln8echsl6no1e6en0@ds145997.mlab.com:45997/heroku_97mjvv9b';
 
 var db;
+var next;
 
 app.use(express.static('static'))
 
 app.get('/', (req, res) => {
+  next = undefined;
   res.sendFile(path.join(__dirname + '/static/views/index.html'));
 });
 
@@ -28,10 +30,37 @@ app.get('/latest', (req, res) => {
 
 app.get('/all', (req, res) => {
   db.collection('records').then(col => {
-    col.find().sort({
+    col.find()
+      .sort({
         "num": -1
-      }).toArray()
-      .then(items => res.json(items));
+      })
+      .toArray()
+      .then(items => res.json(items))
+      .catch(err => console.log(err));
+  });
+});
+
+app.get('/next', (req, res) => {
+  db.collection('records').then(col => {
+    let promise;
+    if (!next) {
+      promise = col.find();
+    } else {
+      promise = col.find({
+        "num": { "$lt": next }
+      });
+    }
+
+    promise.sort({
+      "num": -1
+    })
+      .limit(10)
+      .toArray()
+      .then(items => {
+        res.json(items);
+        next = items[items.length - 1] ? items[items.length - 1].num : -1;
+      })
+      .catch(err => console.log(err));
   });
 });
 

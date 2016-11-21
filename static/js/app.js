@@ -1,12 +1,32 @@
 (function init() {
-  fetch(`/all`)
-    .then(response => response.json())
-    .then(json => {
-      _createPosts(json);
-      _addEventListeners(json.length);
-    });
 
   var importDoc = document.querySelector('#templates').import;
+
+  function fetchNext() {
+    return fetch(`/next`)
+      .then(response => response.json())
+      .then(json => {
+        if (json.length) {
+          setTimeout(function () {
+            _createPosts(json)
+          }, 0);
+        }
+        return json.length;
+      })
+      .then(function (len) {
+        if (len) {
+          fetchNext();
+        } else {
+          return Promise.reject('End of Story');
+        }
+      });
+  }
+
+
+  fetchNext()
+    .catch(function (err) {
+      console.log(err);
+    });
 
   function _createPosts(json) {
     json.forEach(post => {
