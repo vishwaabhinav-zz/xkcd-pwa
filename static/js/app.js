@@ -2,6 +2,7 @@
 
   var importDoc = document.querySelector('#templates').import;
 
+  var length = 0;
   function fetchNext() {
     return fetch(`/next`)
       .then(response => response.json())
@@ -10,6 +11,7 @@
           setTimeout(function () {
             _createPosts(json)
           }, 0);
+          length = length < json[0].num ? json[0].num : length;
         }
         return json.length;
       })
@@ -17,6 +19,7 @@
         if (len) {
           fetchNext();
         } else {
+          _addEventListeners(length);
           return Promise.reject('End of Story');
         }
       });
