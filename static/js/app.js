@@ -36,12 +36,14 @@
       let template = importDoc.querySelector('#post-template');
       let clone = document.importNode(template.content, true);
 
+      imgSrc = 'https:' + post.img.split(':')[1];
+
       clone.querySelector('h3 > a').textContent = post.title;
       clone.querySelector('h3 > a').href = '#' + post.num;
       clone.querySelector('h3 > a').id = post.num;
       clone.querySelector('.alt').textContent = post.alt;
       // clone.querySelector('.img').style.background = 'url(' + post.img + ') bottom center no-repeat';
-      clone.querySelector('img').src = post.img;
+      clone.querySelector('img').src = imgSrc;
 
       document.querySelector('.post-container').appendChild(clone);
     });
