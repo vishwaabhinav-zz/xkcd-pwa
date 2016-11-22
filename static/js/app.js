@@ -1,10 +1,10 @@
 (function init() {
 
   var importDoc = document.querySelector('#templates').import;
-
   var length = 0;
+
   function fetchNext() {
-    return fetch(`/next`)
+    fetch(`/next`)
       .then(response => response.json())
       .then(json => {
         if (json.length) {
@@ -16,20 +16,15 @@
         return json.length;
       })
       .then(function (len) {
-        if (len) {
-          fetchNext();
-        } else {
-          _addEventListeners(length);
-          return Promise.reject('End of Story');
+        if (!len) {
+          console.log('End of Story');
+          document.removeEventListener('scroll', fetchNext);
         }
+      })
+      .catch(function (err) {
+        console.log(err);
       });
   }
-
-
-  fetchNext()
-    .catch(function (err) {
-      console.log(err);
-    });
 
   function _createPosts(json) {
     json.forEach(post => {
@@ -49,7 +44,9 @@
     });
   }
 
-  function _addEventListeners(len) {
+  function _addEventListeners() {
+    document.addEventListener('scroll', fetchNext);
+
     document.querySelector('.fa-random').addEventListener('click', function _goToRandom(e) {
       var rand = Math.floor(Math.random() * len);
       document.getElementById(rand).scrollIntoView({
@@ -58,4 +55,7 @@
       window.scrollBy(0, -50);
     });
   }
+
+  fetchNext();
+  _addEventListeners();
 })();
