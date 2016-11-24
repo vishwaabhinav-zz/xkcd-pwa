@@ -13,10 +13,12 @@ const dbstr = 'mongodb://heroku_97mjvv9b:l7qh0eg92ln8echsl6no1e6en0@ds145997.mla
 var db;
 var next;
 
-app.use(express.static('static'))
+app.use(express.static('static'));
+app.use(express.static('./'));
 
 app.get('/', (req, res) => {
   next = undefined;
+
   res.sendFile(path.join(__dirname + '/static/views/index.html'));
 });
 
