@@ -12,6 +12,27 @@ function _addToCache(method, resource, url) {
     }
 }
 
+function _getFromCache(req) {
+    return caches.open(CACHE_NAME)
+        .then(cache => {
+            return caches.match(req).then(response => {
+                if (response) {
+                    return response;
+                }
+                return fetch(req);
+            });
+        });
+}
+
+function updateCache(req) {
+    caches.open(CACHE_NAME)
+        .then(cache => {
+            return fetch(req).then(response => {
+                return cache.put(req, response.clone());
+            });
+        })
+}
+
 self.addEventListener('install', function _installHandler(e) {
     e.waitUntil(_addToCache('addAll', [
         '/css/master.css',
@@ -22,29 +43,7 @@ self.addEventListener('install', function _installHandler(e) {
 });
 
 self.addEventListener('fetch', function _fetchHandler(e) {
-    e.respondWith(
-        caches.match(e.request)
-            .then(function (response) {
-                if (response) {
-                    return response;
-                }
+    e.respondWith(_getFromCache(e.request.clone()));
 
-                var request = e.request.clone();
-
-                return fetch(e.request).then(
-                    response => {
-                        if (!response ||
-                            response.status !== 200 ||
-                            response.type !== 'basic') {
-                            return response;
-                        }
-
-                        var responseClone = response.clone();
-                        _addToCache(e.request, responseClone);
-
-                        return response;
-                    }
-                );
-            })
-    );
+    e.waitUntil(updateCache(e.request));
 });
