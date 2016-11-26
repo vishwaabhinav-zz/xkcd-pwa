@@ -41,6 +41,8 @@ self.addEventListener('fetch', function _fetchHandler(e) {
 
                         var responseClone = response.clone();
                         _addToCache(e.request, responseClone);
+
+                        return response;
                     }
                 );
             })
