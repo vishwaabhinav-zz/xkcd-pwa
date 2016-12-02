@@ -38,8 +38,7 @@ self.addEventListener('install', function _installHandler(e) {
         '/css/master.css',
         '/js/app.js',
         '/views/templates.html',
-        '/'])
-    );
+        '/']));
 });
 
 self.addEventListener('fetch', function _fetchHandler(e) {
