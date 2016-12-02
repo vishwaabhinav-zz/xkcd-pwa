@@ -11,14 +11,11 @@ const XKCD = 'http://xkcd.com/';
 const dbstr = 'mongodb://heroku_97mjvv9b:l7qh0eg92ln8echsl6no1e6en0@ds145997.mlab.com:45997/heroku_97mjvv9b';
 
 var db;
-var next;
 
 app.use(express.static('static'));
 app.use(express.static('./'));
 
 app.get('/', (req, res) => {
-  next = undefined;
-
   res.sendFile(path.join(__dirname + '/static/views/index.html'));
 });
 
@@ -43,24 +40,28 @@ app.get('/all', (req, res) => {
 });
 
 app.get('/next', (req, res) => {
+  var current = parseInt(req.query.current);
+
+  console.log('next : ', current);
   db.collection('records').then(col => {
     let promise;
-    if (!next) {
+    let limit = 100;
+    if (current === -1) {
       promise = col.find();
+      limit = 10;
     } else {
       promise = col.find({
-        "num": { "$lt": next }
+        "num": { "$lt": current }
       });
     }
 
     promise.sort({
       "num": -1
     })
-      .limit(10)
+      .limit(limit)
       .toArray()
       .then(items => {
         res.json(items);
-        next = items[items.length - 1] ? items[items.length - 1].num : -1;
       })
       .catch(err => console.log(err));
   });

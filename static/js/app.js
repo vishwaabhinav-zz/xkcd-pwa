@@ -3,9 +3,10 @@
   var importDoc = document.querySelector('#templates').import;
   var length = 0;
   var timeout = null;
+  var current = -1;
 
   function fetchNext() {
-    fetch(`/next`)
+    return fetch('/next?current=' + current)
       .then(response => response.json())
       .then(json => {
         if (json.length) {
@@ -13,6 +14,7 @@
             _createPosts(json)
           }, 0);
           length = length < json[0].num ? json[0].num : length;
+          current = json[json.length - 1].num;
         }
         return json.length;
       })
@@ -20,7 +22,9 @@
         if (!len) {
           // console.log('End of Story');
           // document.removeEventListener('scroll', fetchNext);
-          clearInterval(timeout);
+          // clearInterval(timeout);
+        } else {
+          fetchNext();
         }
       })
       .catch(function (err) {
@@ -47,7 +51,7 @@
   }
 
   function _addEventListeners() {
-    timeout = setInterval(fetchNext, 100);
+    // timeout = setInterval(fetchNext, 100);
 
     document.querySelector('.fa-random').addEventListener('click', function _goToRandom(e) {
       var rand = Math.floor(Math.random() * length);
