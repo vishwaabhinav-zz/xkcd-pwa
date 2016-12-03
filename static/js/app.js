@@ -44,6 +44,9 @@
       clone.querySelector('h3 > a').id = post.num;
       clone.querySelector('.alt').textContent = post.alt;
       // clone.querySelector('.img').style.background = 'url(' + post.img + ') bottom center no-repeat';
+      clone.querySelector('img').onload = function showPost() {
+        this.closest('.post-wrapper').style.display = '';
+      };
       clone.querySelector('img').src = imgSrc;
 
       document.querySelector('.post-container').appendChild(clone);
