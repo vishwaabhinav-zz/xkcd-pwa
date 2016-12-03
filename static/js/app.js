@@ -57,11 +57,17 @@
     // timeout = setInterval(fetchNext, 100);
 
     document.querySelector('.fa-random').addEventListener('click', function _goToRandom(e) {
-      var rand = Math.floor(Math.random() * length);
-      document.getElementById(rand).scrollIntoView({
-        'behavior': 'smooth'
-      });
-      window.scrollBy(0, -50);
+      do {
+        var rand = Math.floor(Math.random() * length);
+        var post = document.getElementById(rand);
+        if (post && post.closest('.post-wrapper').style.display !== 'none') {
+          post.scrollIntoView({
+            'behavior': 'smooth'
+          });
+          window.scrollBy(0, -50);
+          return;
+        }
+      } while (true);
     });
   }
 
