@@ -54,7 +54,9 @@
   }
 
   function _addEventListeners() {
-    // timeout = setInterval(fetchNext, 100);
+    document.querySelector('.fa-toggle-up').addEventListener('click', function _goToTop(e) {
+      scrollTo(0, 0);
+    });
 
     document.querySelector('.fa-random').addEventListener('click', function _goToRandom(e) {
       do {

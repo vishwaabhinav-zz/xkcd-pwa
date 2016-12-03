@@ -115,3 +115,12 @@ hr {
     margin-bottom: 0px;
     width: 50%;
 }
+
+.fa-toggle-up {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    font-size: 60px;
+    cursor: pointer;
+    color: #ccc;
+}
