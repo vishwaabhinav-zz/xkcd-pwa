@@ -1,0 +1,14 @@
+{
+  "orientation": "portrait",
+  "background_color": "#333333",
+  "name": "xkcd - pwa",
+  "short_name": "xkcd - pwa",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "static/images/favicon.ico",
+      "sizes": "144x144",
+      "type": "image/png"
+    }
+  ]
+}
