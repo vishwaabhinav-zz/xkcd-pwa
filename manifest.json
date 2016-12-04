@@ -6,7 +6,7 @@
   "display": "standalone",
   "icons": [
     {
-      "src": "static/images/favicon.ico",
+      "src": "/favicon.ico",
       "sizes": "144x144",
       "type": "image/png"
     }
