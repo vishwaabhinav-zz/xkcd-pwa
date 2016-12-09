@@ -26,6 +26,7 @@
   "homepage": "https://github.com/vishwaabhinav/xkcd-pwa#readme",
   "dependencies": {
     "bottleneck": "^1.15.0",
+    "compression": "^1.6.2",
     "express": "^4.14.0",
     "mongodb-promise": "^0.0.4",
     "mongoose": "^4.6.8",

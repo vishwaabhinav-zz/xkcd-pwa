@@ -1,4 +1,5 @@
 const express = require('express');
+const compression = require('compression');
 const path = require('path');
 const http = require('http');
 const request = require('request');
@@ -12,6 +13,7 @@ const dbstr = 'mongodb://heroku_97mjvv9b:l7qh0eg92ln8echsl6no1e6en0@ds145997.mla
 
 var db;
 
+app.use(compression());
 app.use(express.static('static'));
 app.use(express.static('./'));
 
@@ -42,7 +44,6 @@ app.get('/all', (req, res) => {
 app.get('/next', (req, res) => {
   var current = parseInt(req.query.current);
 
-  console.log('next : ', current);
   db.collection('records').then(col => {
     let promise;
     let limit = 100;
