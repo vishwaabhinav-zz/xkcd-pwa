@@ -1,4 +1,4 @@
-(function init() {
+window.onload = function init() {
 
   var importDoc = document.querySelector('#templates').import;
   var length = 0;
@@ -86,4 +86,4 @@
   fetchNext();
   _addEventListeners();
   _registerServiceWorker();
-})();
+};
