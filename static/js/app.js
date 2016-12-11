@@ -1,9 +1,11 @@
-window.onload = function init() {
+'use strict';
 
+window.onload = function init() {
   var importDoc = document.querySelector('#templates').import;
   var length = 0;
-  var timeout = null;
   var current = -1;
+  var swRegistration = null;
+  var isSubscribed = false;
 
   function fetchNext() {
     return fetch('/next?current=' + current)
@@ -20,9 +22,7 @@ window.onload = function init() {
       })
       .then(function (len) {
         if (!len) {
-          // console.log('End of Story');
-          // document.removeEventListener('scroll', fetchNext);
-          // clearInterval(timeout);
+          console.log('End of Story');
         } else {
           fetchNext();
         }
@@ -76,11 +76,33 @@ window.onload = function init() {
   function _registerServiceWorker() {
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/service_worker.js').then(function (registration) {
+        swRegistration = registration;
         console.log('ServiceWorker registration successful with scope: ', registration.scope);
+
+        if (_pushEnabled()) {
+          _checkForPushSubscription();
+        }
       }).catch(function (err) {
         console.log('ServiceWorker registration failed: ', err);
       });
     }
+  }
+
+  function _pushEnabled() {
+    return ('PushManager' in window);
+  }
+
+  function _checkForPushSubscription() {
+    swRegistration.pushManager.getSubscription()
+      .then(function (subscription) {
+        isSubscribed = !(subscription === null);
+
+        if (isSubscribed) {
+          console.log('User IS subscribed.');
+        } else {
+          console.log('User is NOT subscribed.');
+        }
+      });
   }
 
   fetchNext();
