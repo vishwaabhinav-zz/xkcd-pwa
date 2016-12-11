@@ -4,6 +4,7 @@
   "name": "xkcd - pwa",
   "short_name": "xkcd - pwa",
   "display": "standalone",
+  "start_url": ".",
   "icons": [
     {
       "src": "static/images/small.png",
