@@ -37,7 +37,7 @@ window.onload = function init() {
       let template = importDoc.querySelector('#post-template');
       let clone = document.importNode(template.content, true);
 
-      imgSrc = 'https:' + post.img.split(':')[1];
+      let imgSrc = 'https:' + post.img.split(':')[1];
 
       clone.querySelector('h3 > a').textContent = post.title;
       clone.querySelector('h3 > a').href = '#' + post.num;
