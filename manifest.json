@@ -6,8 +6,13 @@
   "display": "standalone",
   "icons": [
     {
-      "src": "/favicon.ico",
-      "sizes": "144x144",
+      "src": "static/images/small.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "static/images/medium.png",
+      "sizes": "32x32",
       "type": "image/png"
     }
   ]
