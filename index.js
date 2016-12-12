@@ -15,7 +15,7 @@ var db;
 
 app.use(compression());
 app.use(express.static('static'));
-app.use(express.static('./'));
+app.use(express.static('.'));
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname + '/static/views/index.html'));
