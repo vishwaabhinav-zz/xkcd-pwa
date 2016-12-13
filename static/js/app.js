@@ -2,14 +2,17 @@
 
 window.onload = function init() {
 
-  // //Init firebase
-  // var config = {
-  //   apiKey: "AIzaSyAaiLZt8QjllRnNwXTTExlkSjzULTmDK7Y",
-  //   messagingSenderId: "574431562885"
-  // };
-  // firebase.initializeApp(config);
+  //Init firebase
+  var config = {
+    apiKey: "AIzaSyAaiLZt8QjllRnNwXTTExlkSjzULTmDK7Y",
+    messagingSenderId: "574431562885"
+  };
+  firebase.initializeApp(config);
+  var messaging = firebase.messaging();
 
-  var applicationServerPublicKey = 'BOQMzL5OX41xCo43Qs9yPEhJOOZQKCMLOfXc4x3PL6ctxoKt7OxWF4NoQAHeofMbw9jVmZ5Fy9iUgvy-1d7AP04';
+  messaging.onMessage(payload => {
+    console.log(payload);
+  });
 
   var importDoc = document.querySelector('#templates').import;
   var length = 0;
@@ -117,36 +120,19 @@ window.onload = function init() {
     return ('PushManager' in window);
   }
 
-  function _subscribeUser() {
-    const applicationServerKey = urlB64ToUint8Array(applicationServerPublicKey);
-    swRegistration.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: applicationServerKey
-    }).then(function (subscription) {
-      console.log('User is subscribed:', subscription);
-
-      // updateSubscriptionOnServer(subscription);
-
-      isSubscribed = true;
-
-      // updateBtn();
-    }).catch(function (err) {
-      console.log('Failed to subscribe the user: ', err);
-      // updateBtn();
-    });
-  }
-
   function _checkForPushSubscription() {
-    swRegistration.pushManager.getSubscription()
-      .then(function (subscription) {
-        isSubscribed = !(subscription === null);
-
-        if (isSubscribed) {
-          console.log('User IS subscribed.');
-        } else {
-          console.log('User is NOT subscribed.');
-          _subscribeUser();
-        }
+    messaging.requestPermission()
+      .then(function () {
+        console.log('Notification permission granted.');
+        // TODO(developer): Retrieve an Instance ID token for use with FCM.
+        // ...
+        return messaging.getToken();
+      })
+      .then(function (token) {
+        console.log(token);
+      })
+      .catch(function (err) {
+        console.log('Unable to get permission to notify.', err);
       });
   }
 

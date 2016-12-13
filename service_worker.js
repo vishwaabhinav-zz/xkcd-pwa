@@ -1,4 +1,4 @@
-var CACHE_NAME = 'static-v2';
+var CACHE_NAME = 'static-v3';
 
 function _addToCache(method, resource, url) {
     if (method === 'addAll') {
@@ -45,20 +45,6 @@ self.addEventListener('fetch', function _fetchHandler(e) {
     e.respondWith(_getFromCache(e.request.clone()));
 
     e.waitUntil(updateCache(e.request));
-});
-
-self.addEventListener('push', function (event) {
-    console.log('[Service Worker] Push Received.');
-    console.log(`[Service Worker] Push had this data: "${event.data.text()}"`);
-
-    const title = 'xkcd-pwa';
-    const options = {
-        body: 'New doodle got uploaded. Check it out..',
-        icon: 'static/images/large.png',
-        badge: 'static/images/small.png'
-    };
-
-    event.waitUntil(self.registration.showNotification(title, options));
 });
 
 self.addEventListener('notificationclick', function (event) {
