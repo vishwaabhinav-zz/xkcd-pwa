@@ -28,9 +28,11 @@
     "bottleneck": "^1.15.0",
     "compression": "^1.6.2",
     "express": "^4.14.0",
+    "firebase-admin": "^4.0.4",
     "mongodb-promise": "^0.0.4",
     "mongoose": "^4.6.8",
     "request": "^2.78.0",
-    "request-promise": "^4.1.1"
+    "request-promise": "^4.1.1",
+    "web-push": "^3.2.1"
   }
 }

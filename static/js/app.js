@@ -1,11 +1,36 @@
 'use strict';
 
 window.onload = function init() {
+
+  // //Init firebase
+  // var config = {
+  //   apiKey: "AIzaSyAaiLZt8QjllRnNwXTTExlkSjzULTmDK7Y",
+  //   messagingSenderId: "574431562885"
+  // };
+  // firebase.initializeApp(config);
+
+  var applicationServerPublicKey = 'BOQMzL5OX41xCo43Qs9yPEhJOOZQKCMLOfXc4x3PL6ctxoKt7OxWF4NoQAHeofMbw9jVmZ5Fy9iUgvy-1d7AP04';
+
   var importDoc = document.querySelector('#templates').import;
   var length = 0;
   var current = -1;
   var swRegistration = null;
   var isSubscribed = false;
+
+  function urlB64ToUint8Array(base64String) {
+    const padding = '='.repeat((4 - base64String.length % 4) % 4);
+    const base64 = (base64String + padding)
+      .replace(/\-/g, '+')
+      .replace(/_/g, '/');
+
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+
+    for (let i = 0; i < rawData.length; ++i) {
+      outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+  }
 
   function fetchNext() {
     return fetch('/next?current=' + current)
@@ -92,6 +117,25 @@ window.onload = function init() {
     return ('PushManager' in window);
   }
 
+  function _subscribeUser() {
+    const applicationServerKey = urlB64ToUint8Array(applicationServerPublicKey);
+    swRegistration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: applicationServerKey
+    }).then(function (subscription) {
+      console.log('User is subscribed:', subscription);
+
+      // updateSubscriptionOnServer(subscription);
+
+      isSubscribed = true;
+
+      // updateBtn();
+    }).catch(function (err) {
+      console.log('Failed to subscribe the user: ', err);
+      // updateBtn();
+    });
+  }
+
   function _checkForPushSubscription() {
     swRegistration.pushManager.getSubscription()
       .then(function (subscription) {
@@ -101,6 +145,7 @@ window.onload = function init() {
           console.log('User IS subscribed.');
         } else {
           console.log('User is NOT subscribed.');
+          _subscribeUser();
         }
       });
   }
