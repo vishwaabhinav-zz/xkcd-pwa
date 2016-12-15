@@ -17,6 +17,14 @@ function _fetchJSON() {
   return request(options);
 }
 
+function _notify() {
+  var options = {
+    url: 'https://xkcd-pwa.herokuapp.com/notify'
+  }
+
+  return request(options);
+}
+
 function _checkIfUpdated(json) {
   console.log(json);
   return mp.MongoClient.connect('mongodb://heroku_97mjvv9b:l7qh0eg92ln8echsl6no1e6en0@ds145997.mlab.com:45997/heroku_97mjvv9b')
@@ -42,9 +50,9 @@ function _insert(json) {
         .then(col => col.insert(json))
         .then(result => {
           console.log(result);
-          db.close()
-            .then(console.log('success'));
-        });
+          return _notify();
+        })
+        .then(() => db.close());
     })
     .fail(err => console.log(err));
 }

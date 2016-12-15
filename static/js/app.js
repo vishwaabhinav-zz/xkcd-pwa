@@ -14,6 +14,19 @@ window.onload = function init() {
     console.log(payload);
   });
 
+  messaging.onTokenRefresh(function () {
+    messaging.getToken()
+      .then(function (refreshedToken) {
+        console.log('Token refreshed.');
+        _registerDeviceForMessaging(refreshedToken);
+        // ...
+      })
+      .catch(function (err) {
+        console.log('Unable to retrieve refreshed token ', err);
+        // showToken('Unable to retrieve refreshed token ', err);
+      });
+  });
+
   var importDoc = document.querySelector('#templates').import;
   var length = 0;
   var current = -1;

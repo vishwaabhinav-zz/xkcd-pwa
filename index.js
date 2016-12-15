@@ -7,6 +7,7 @@ const mp = require('mongodb-promise');
 const push = require('web-push');
 const firebase = require('firebase-admin');
 const parser = require('body-parser');
+const rp = require('request-promise');
 
 firebase.initializeApp({
     credential: firebase.credential.cert({
@@ -89,12 +90,78 @@ app.post('/register', (req, res) => {
             .then(collection => collection.insert({ 'token': req.body.token }))
             .then(result => console.log(result))
             .then(() => res.json('Success'))
-            .fail(err => console.log(err))
+            .fail(err => {
+                res.status(500).send('Failure');
+            });
+    } else {
+        res.status(500).send('Failure');
     }
 });
 
-app.get('/notify', (req, res) => {
+function _getAllTokens() {
+    return db.collection('token')
+        .then(collection => collection.find().toArray());
+}
 
+function _sendNotification(token) {
+    var options = {
+        method: 'POST',
+        uri: 'http://fcm.googleapis.com/fcm/send',
+        body: {
+            "notification": {
+                "title": "xkcd pwa",
+                "body": "new comic got uploaded. check it out..",
+                "icon": "images/large.png",
+                "click_action": "https://xkcd-pwa.herokuapp.com"
+            },
+            "to": token,
+            "time_to_live": 3
+        },
+        headers: {
+            Authorization: 'key=AAAAhb7KDIU:APA91bF0lsmQX6QDR9aYY2KIGu6yMz9E8IRlckDWQnzKxrBmOql7WXrZYXj7t5UO6xjJw_qSn5Zgt06zd5xc7EBZYYUUC8zqiPGhzOgV3lKCXfecIOb1m8-gODrlRKop80BuEsb-vDiV8MqR4gLEtH0SaiNQxUg88w',
+            'content-type': 'application/json'
+        },
+        json: true // Automatically stringifies the body to JSON
+    };
+
+    return rp(options)
+        .then(resp => console.log(resp))
+        .catch(err => console.log(err));
+
+    // fetch('http://fcm.googleapis.com/fcm/send', {
+    //     method: 'POST',
+    //     headers: {
+    //         Authorization: 'key=AAAAhb7KDIU:APA91bF0lsmQX6QDR9aYY2KIGu6yMz9E8IRlckDWQnzKxrBmOql7WXrZYXj7t5UO6xjJw_qSn5Zgt06zd5xc7EBZYYUUC8zqiPGhzOgV3lKCXfecIOb1m8-gODrlRKop80BuEsb-vDiV8MqR4gLEtH0SaiNQxUg88w',
+    //         'content-type': 'application/json'
+    //     },
+    //     body: {
+    //         "notification": {
+    //             "title": "xkcd pwa",
+    //             "body": "new comic got uploaded. check it out..",
+    //             "icon": "static/images/large.png",
+    //             "click_action": "https://xkcd-pwa.herokuapp.com"
+    //         },
+    //         "to": token
+    //     }
+    // });
+}
+
+function _queueNotificationRequests(tokens) {
+    var promiseArr = [];
+    tokens.forEach(token => {
+        promiseArr.push(_sendNotification(token));
+    });
+    return Promise.all(promiseArr);
+}
+app.get('/notify', (req, res) => {
+    _getAllTokens().then(tokens => {
+        return _queueNotificationRequests(tokens.map(obj => obj.token));
+    })
+        .then(() => res.json('Success'))
+        .catch(err => {
+            console.log(err);
+            res.status(500).send('Failure :' + err);
+        });
 });
 
 mp.MongoClient.connect(dbstr)

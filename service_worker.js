@@ -1,4 +1,4 @@
-var CACHE_NAME = 'static-v4';
+var CACHE_NAME = 'static-v5';
 
 function _addToCache(method, resource, url) {
     if (method === 'addAll') {
@@ -47,7 +47,7 @@ self.addEventListener('fetch', function _fetchHandler(e) {
     e.waitUntil(updateCache(e.request));
 });
 
-self.addEventListener('notificationclick', function(event) {
+self.addEventListener('notificationclick', function (event) {
     console.log('[Service Worker] Notification click Received.');
 
     event.notification.close();
