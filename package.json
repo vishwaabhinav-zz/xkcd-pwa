@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/vishwaabhinav/xkcd-pwa#readme",
   "dependencies": {
+    "body-parser": "^1.15.2",
     "bottleneck": "^1.15.0",
     "compression": "^1.6.2",
     "express": "^4.14.0",

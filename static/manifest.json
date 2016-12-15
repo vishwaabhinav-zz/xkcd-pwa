@@ -4,26 +4,26 @@
   "name": "xkcd - pwa",
   "short_name": "xkcd - pwa",
   "display": "standalone",
-  "start_url": ".",
+  "start_url": "..",
   "gcm_sender_id": "103953800507",
   "icons": [
     {
-      "src": "static/images/small.png",
+      "src": "images/small.png",
       "sizes": "16x16",
       "type": "image/png"
     },
     {
-      "src": "static/images/medium.png",
+      "src": "images/medium.png",
       "sizes": "32x32",
       "type": "image/png"
     },
     {
-      "src": "static/images/medium-high.png",
+      "src": "images/medium-high.png",
       "sizes": "48x48",
       "type": "image/png"
     },
     {
-      "src": "static/images/large.png",
+      "src": "images/large.png",
       "sizes": "144x144",
       "type": "image/png"
     }

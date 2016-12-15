@@ -129,11 +129,28 @@ window.onload = function init() {
         return messaging.getToken();
       })
       .then(function (token) {
+        _registerDeviceForMessaging(token);
         console.log(token);
       })
       .catch(function (err) {
         console.log('Unable to get permission to notify.', err);
       });
+  }
+
+  function _registerDeviceForMessaging(token) {
+    fetch('/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        token: token
+      })
+    }).then(response => {
+      console.log(response);
+    }).catch(err => {
+      console.log(err);
+    });
   }
 
   fetchNext();
