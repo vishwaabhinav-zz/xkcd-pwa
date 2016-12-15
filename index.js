@@ -87,7 +87,11 @@ app.get('/next', (req, res) => {
 app.post('/register', (req, res) => {
     if (req.body.token) {
         db.collection('token')
-            .then(collection => collection.insert({ 'token': req.body.token }))
+            .then(collection => collection.update({
+                'token': req.body.token
+            }, json, {
+                    upsert: true
+                }))
             .then(result => console.log(result))
             .then(() => res.json('Success'))
             .fail(err => {
@@ -127,23 +131,6 @@ function _sendNotification(token) {
     return rp(options)
         .then(resp => console.log(resp))
         .catch(err => console.log(err));
-
-    // fetch('http://fcm.googleapis.com/fcm/send', {
-    //     method: 'POST',
-    //     headers: {
-    //         Authorization: 'key=AAAAhb7KDIU:APA91bF0lsmQX6QDR9aYY2KIGu6yMz9E8IRlckDWQnzKxrBmOql7WXrZYXj7t5UO6xjJw_qSn5Zgt06zd5xc7EBZYYUUC8zqiPGhzOgV3lKCXfecIOb1m8-gODrlRKop80BuEsb-vDiV8MqR4gLEtH0SaiNQxUg88w',
-    //         'content-type': 'application/json'
-    //     },
-    //     body: {
-    //         "notification": {
-    //             "title": "xkcd pwa",
-    //             "body": "new comic got uploaded. check it out..",
-    //             "icon": "static/images/large.png",
-    //             "click_action": "https://xkcd-pwa.herokuapp.com"
-    //         },
-    //         "to": token
-    //     }
-    // });
 }
 
 function _queueNotificationRequests(tokens) {
@@ -153,6 +140,7 @@ function _queueNotificationRequests(tokens) {
     });
     return Promise.all(promiseArr);
 }
+
 app.get('/notify', (req, res) => {
     _getAllTokens().then(tokens => {
         return _queueNotificationRequests(tokens.map(obj => obj.token));
