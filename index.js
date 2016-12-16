@@ -41,6 +41,9 @@ app.get('/latest', (req, res) => {
     request(`${XKCD}info.0.json`, (err, response, body) => {
         if (!err && response.statusCode === 200) {
             res.json(body);
+        } else {
+            console.error(err);
+            res.status(500).send('Failure : ' + err);
         }
     });
 });
@@ -53,7 +56,10 @@ app.get('/all', (req, res) => {
             })
             .toArray()
             .then(items => res.json(items))
-            .catch(err => console.log(err));
+            .catch(err => {
+                console.log(err);
+                res.status(500).send('Failure : ' + err);
+            });
     });
 });
 
@@ -74,13 +80,15 @@ app.get('/next', (req, res) => {
 
         promise.sort({
             "num": -1
-        })
-            .limit(limit)
+        }).limit(limit)
             .toArray()
             .then(items => {
                 res.json(items);
             })
-            .catch(err => console.log(err));
+            .catch(err => {
+                console.error(err);
+                res.status(500).send('Failure: ' + err);
+            });
     });
 });
 
@@ -95,10 +103,12 @@ app.post('/register', (req, res) => {
             .then(result => console.log(result))
             .then(() => res.json('Success'))
             .fail(err => {
-                res.status(500).send('Failure');
+                console.error(err);
+                res.status(500).send('Failure : ' + err);
             });
     } else {
-        res.status(500).send('Failure');
+        console.error('Request didn\'t send a valid token');
+        res.status(500).send('Failure : Send a valid token');
     }
 });
 
@@ -147,7 +157,7 @@ app.get('/notify', (req, res) => {
     })
         .then(() => res.json('Success'))
         .catch(err => {
-            console.log(err);
+            console.error(err);
             res.status(500).send('Failure :' + err);
         });
 });
