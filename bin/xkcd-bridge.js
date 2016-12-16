@@ -17,9 +17,14 @@ function _fetchJSON() {
   return request(options);
 }
 
-function _notify() {
+function _notify(json) {
   var options = {
-    url: 'https://xkcd-pwa.herokuapp.com/notify'
+    method: 'POST',
+    url: 'https://xkcd-pwa.herokuapp.com/notify',
+    body: {
+      payload: json
+    },
+    json: true
   }
 
   return request(options);
