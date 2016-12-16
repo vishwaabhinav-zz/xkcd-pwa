@@ -95,11 +95,9 @@ app.get('/next', (req, res) => {
 app.post('/register', (req, res) => {
     if (req.body.token) {
         db.collection('token')
-            .then(collection => collection.update({
+            .then(collection => collection.update({ 'token': req.body.token }, {
                 'token': req.body.token
-            }, json, {
-                    upsert: true
-                }))
+            }, { upsert: true }))
             .then(result => console.log(result))
             .then(() => res.json('Success'))
             .fail(err => {
