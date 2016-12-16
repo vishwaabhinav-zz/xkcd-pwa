@@ -50,7 +50,7 @@ function _insert(json) {
         .then(col => col.insert(json))
         .then(result => {
           console.log(result);
-          return _notify();
+          return _notify(json);
         })
         .then(() => db.close());
     })

@@ -115,15 +115,15 @@ function _getAllTokens() {
         .then(collection => collection.find().toArray());
 }
 
-function _sendNotification(token) {
+function _sendNotification(token, payload) {
     var options = {
         method: 'POST',
         uri: 'http://fcm.googleapis.com/fcm/send',
         body: {
             "notification": {
-                "title": "xkcd pwa",
+                "title": payload.title,
                 "body": "new comic got uploaded. check it out..",
-                "icon": "images/large.png",
+                "icon": payload.icon,
                 "click_action": "https://xkcd-pwa.herokuapp.com"
             },
             "to": token,
@@ -141,19 +141,25 @@ function _sendNotification(token) {
         .catch(err => console.log(err));
 }
 
-function _queueNotificationRequests(tokens) {
+function _queueNotificationRequests(tokens, payload) {
     var promiseArr = [];
     tokens.forEach(token => {
-        promiseArr.push(_sendNotification(token));
+        promiseArr.push(_sendNotification(token, payload));
     });
     return Promise.all(promiseArr);
 }
 
-app.get('/notify', (req, res) => {
+app.all('/notify', (req, res) => {
+    let payload = {
+        title: 'xkcd pwa',
+        icon: 'images/large.png'
+    };
+    if (req.body && req.body.payload) {
+        payload = req.body.payload;
+    }
     _getAllTokens().then(tokens => {
-        return _queueNotificationRequests(tokens.map(obj => obj.token));
-    })
-        .then(() => res.json('Success'))
+        return _queueNotificationRequests(tokens.map(obj => obj.token), payload);
+    }).then(() => res.json('Success'))
         .catch(err => {
             console.error(err);
             res.status(500).send('Failure :' + err);
