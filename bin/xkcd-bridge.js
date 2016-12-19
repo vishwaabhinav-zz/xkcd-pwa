@@ -17,12 +17,12 @@ function _fetchJSON() {
   return request(options);
 }
 
-function _notify(json) {
+function _notify(title) {
   var options = {
     method: 'POST',
     url: 'https://xkcd-pwa.herokuapp.com/notify',
     body: {
-      payload: json
+      title: title
     },
     json: true
   }
@@ -55,7 +55,7 @@ function _insert(json) {
         .then(col => col.insert(json))
         .then(result => {
           console.log(result);
-          return _notify(json);
+          return _notify(json.title);
         })
         .then(() => db.close());
     })
