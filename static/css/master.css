@@ -97,7 +97,6 @@ body {
 }
 
 .post .img {
-    background: url(http://placehold.it/350x150);
     flex: 2 1 0px;
     max-width: 90%;
     border: 1px dotted;

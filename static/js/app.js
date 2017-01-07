@@ -77,6 +77,7 @@ window.onload = function init() {
         this.closest('.post-wrapper').style.display = '';
       };
       clone.querySelector('img').src = imgSrc;
+      clone.querySelector('img').setAttribute('alt', post.alt);
 
       document.querySelector('.post-container').appendChild(clone);
     });
