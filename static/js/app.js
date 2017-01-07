@@ -125,7 +125,8 @@ window.onload = function init() {
         console.log('ServiceWorker registration successful with scope: ', registration.scope);
 
         if (_pushEnabled()) {
-          _checkForPushSubscription();
+          document.addEventListener('scroll', _checkForPushSubscription);
+          document.addEventListener('touchstart', _checkForPushSubscription);
         }
       }).catch(function(err) {
         console.log('ServiceWorker registration failed: ', err);
@@ -141,8 +142,6 @@ window.onload = function init() {
     messaging.requestPermission()
       .then(function() {
         console.log('Notification permission granted.');
-        // TODO(developer): Retrieve an Instance ID token for use with FCM.
-        // ...
         return messaging.getToken();
       })
       .then(function(token) {
@@ -152,6 +151,8 @@ window.onload = function init() {
       .catch(function(err) {
         console.log('Unable to get permission to notify.', err);
       });
+    document.removeEventListener('scroll', _checkForPushSubscription);
+    document.removeEventListener('touchstart', _checkForPushSubscription);
   }
 
   function _registerDeviceForMessaging(token) {
