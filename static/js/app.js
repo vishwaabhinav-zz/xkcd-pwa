@@ -1,3 +1,5 @@
+/*global firebase*/
+
 'use strict';
 
 window.onload = function init() {
@@ -14,63 +16,49 @@ window.onload = function init() {
     console.log(payload);
   });
 
-  messaging.onTokenRefresh(function () {
+  messaging.onTokenRefresh(function() {
     messaging.getToken()
-      .then(function (refreshedToken) {
+      .then(function(refreshedToken) {
         console.log('Token refreshed.');
         _registerDeviceForMessaging(refreshedToken);
-        // ...
+      // ...
       })
-      .catch(function (err) {
+      .catch(function(err) {
         console.log('Unable to retrieve refreshed token ', err);
-        // showToken('Unable to retrieve refreshed token ', err);
+      // showToken('Unable to retrieve refreshed token ', err);
       });
   });
 
   var importDoc = document.querySelector('#templates').import;
   var length = 0;
   var current = -1;
-  var swRegistration = null;
-  var isSubscribed = false;
-
-  function urlB64ToUint8Array(base64String) {
-    const padding = '='.repeat((4 - base64String.length % 4) % 4);
-    const base64 = (base64String + padding)
-      .replace(/\-/g, '+')
-      .replace(/_/g, '/');
-
-    const rawData = window.atob(base64);
-    const outputArray = new Uint8Array(rawData.length);
-
-    for (let i = 0; i < rawData.length; ++i) {
-      outputArray[i] = rawData.charCodeAt(i);
-    }
-    return outputArray;
-  }
 
   function fetchNext() {
-    return fetch('/next?current=' + current)
-      .then(response => response.json())
-      .then(json => {
-        if (json.length) {
-          setTimeout(function () {
-            _createPosts(json)
-          }, 0);
-          length = length < json[0].num ? json[0].num : length;
-          current = json[json.length - 1].num;
-        }
-        return json.length;
-      })
-      .then(function (len) {
-        if (!len) {
-          console.log('End of Story');
-        } else {
-          fetchNext();
-        }
-      })
-      .catch(function (err) {
-        console.log(err);
-      });
+    if (current > -2) {
+      return fetch('/next?current=' + current)
+        .then(response => response.json())
+        .then(json => {
+          if (json.length) {
+            setTimeout(function() {
+              _createPosts(json)
+            }, 0);
+            length = length < json[0].num ? json[0].num : length;
+            current = json[json.length - 1].num;
+          }
+          return json.length;
+        })
+        .then(function(len) {
+          if (!len) {
+            current = -2;
+            console.log('End of Story');
+          } else {
+            // fetchNext();
+          }
+        })
+        .catch(function(err) {
+          console.log(err);
+        });
+    }
   }
 
   function _createPosts(json) {
@@ -94,6 +82,20 @@ window.onload = function init() {
     });
   }
 
+  var flag;
+
+  function throttle(func) {
+    return function scrollListener() {
+      if (!flag) {
+        flag = true;
+        setTimeout(function() {
+          func();
+          flag = false;
+        }, 500);
+      }
+    }
+  }
+
   function _addEventListeners() {
     document.querySelector('.fa-toggle-up').addEventListener('click', function _goToTop(e) {
       scrollTo(0, 0);
@@ -112,18 +114,19 @@ window.onload = function init() {
         }
       } while (true);
     });
+
+    document.addEventListener('scroll', throttle(fetchNext));
   }
 
   function _registerServiceWorker() {
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/service_worker.js').then(function (registration) {
-        swRegistration = registration;
+      navigator.serviceWorker.register('/service_worker.js').then(function(registration) {
         console.log('ServiceWorker registration successful with scope: ', registration.scope);
 
         if (_pushEnabled()) {
           _checkForPushSubscription();
         }
-      }).catch(function (err) {
+      }).catch(function(err) {
         console.log('ServiceWorker registration failed: ', err);
       });
     }
@@ -135,17 +138,17 @@ window.onload = function init() {
 
   function _checkForPushSubscription() {
     messaging.requestPermission()
-      .then(function () {
+      .then(function() {
         console.log('Notification permission granted.');
         // TODO(developer): Retrieve an Instance ID token for use with FCM.
         // ...
         return messaging.getToken();
       })
-      .then(function (token) {
+      .then(function(token) {
         _registerDeviceForMessaging(token);
         console.log(token);
       })
-      .catch(function (err) {
+      .catch(function(err) {
         console.log('Unable to get permission to notify.', err);
       });
   }
