@@ -23,3 +23,7 @@
 .fa-random:before {
   content: "\f074";
 }
+
+.fa-toggle-up:before {
+  content: "\f151";
+}
