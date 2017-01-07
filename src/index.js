@@ -18,9 +18,8 @@ app.use(parser.json());
 app.use(parser.urlencoded({
     extended: true
 }));
-app.use(express.static('src'));
-app.use(express.static('src/static'));
-app.use(express.static('..'));
+app.use(express.static(path.join(__dirname + '/static')));
+app.use(express.static(path.join(__dirname + '/..')));
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname + '/static/views/index.html'));
