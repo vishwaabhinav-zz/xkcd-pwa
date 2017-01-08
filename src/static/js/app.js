@@ -1,6 +1,9 @@
 /*global firebase*/
 'use strict';
 
+require('../css/master.css');
+require('../views/templates.html');
+
 window.onload = function init() {
 
   //Init firebase
@@ -11,7 +14,7 @@ window.onload = function init() {
   firebase.initializeApp(config);
   var messaging = firebase.messaging();
 
-  messaging.onMessage(payload => {
+  messaging.onMessage(function(payload) {
     console.log(payload);
   });
 
@@ -28,15 +31,17 @@ window.onload = function init() {
       });
   });
 
-  var importDoc = document.querySelector('#templates').import;
+  // var importDoc = document.querySelector('#templates').import;
   var length = 0;
   var current = -1;
 
   function fetchNext() {
     if (current > -2) {
       return fetch('/next?current=' + current)
-        .then(response => response.json())
-        .then(json => {
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(json) {
           if (json.length) {
             setTimeout(function() {
               _createPosts(json)
@@ -61,11 +66,11 @@ window.onload = function init() {
   }
 
   function _createPosts(json) {
-    json.forEach(post => {
-      let template = importDoc.querySelector('#post-template');
-      let clone = document.importNode(template.content, true);
+    json.forEach(function(post) {
+      var template = document.querySelector('#post-template');
+      var clone = document.importNode(template.content, true);
 
-      let imgSrc = 'https:' + post.img.split(':')[1];
+      var imgSrc = 'https:' + post.img.split(':')[1];
 
       clone.querySelector('h3 > a').textContent = post.title;
       clone.querySelector('h3 > a').href = '#' + post.num;
@@ -163,9 +168,9 @@ window.onload = function init() {
       body: JSON.stringify({
         token: token
       })
-    }).then(response => {
+    }).then(function(response) {
       console.log(response);
-    }).catch(err => {
+    }).catch(function(err) {
       console.log(err);
     });
   }

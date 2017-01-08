@@ -1,4 +1,8 @@
-var HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+
+const extractCSS = new ExtractTextPlugin('master.css');
 
 module.exports = {
     entry: './src/static/js/app.js',
@@ -14,7 +18,10 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                loader: "style-loader!css-loader"
+                loader: ExtractTextPlugin.extract({
+                    fallbackLoader: "style-loader",
+                    loader: "css-loader"
+                })
             },
             {
                 test: /\.(png|woff|woff2|eot|ttf|svg)$/,
@@ -29,7 +36,10 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             filename: 'index.html',
-            template: 'src/static/views/index.html'
-        })
+            template: 'src/static/views/index.html',
+            inlineSource: '.(js|css)$'
+        }),
+        new HtmlWebpackInlineSourcePlugin(),
+        extractCSS,
     ]
 }

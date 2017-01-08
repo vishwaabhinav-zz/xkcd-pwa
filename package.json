@@ -5,7 +5,7 @@
   "main": "index.html",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack && node src/index.js",
+    "start": "webpack -p && node src/index.js",
     "webpack": "webpack"
   },
   "engines": {
@@ -26,24 +26,28 @@
   },
   "homepage": "https://github.com/vishwaabhinav/xkcd-pwa#readme",
   "dependencies": {
+    "babel-core": "^6.21.0",
+    "babel-loader": "^6.2.10",
     "body-parser": "^1.15.2",
     "bottleneck": "^1.15.0",
     "compression": "^1.6.2",
+    "css-loader": "^0.26.1",
     "express": "^4.14.0",
+    "extract-text-webpack-plugin": "^2.0.0-beta.4",
+    "file-loader": "^0.9.0",
     "firebase-admin": "^4.0.4",
+    "html-loader": "^0.4.4",
+    "html-webpack-plugin": "^2.26.0",
     "mongodb-promise": "^0.0.4",
     "request": "^2.78.0",
     "request-promise": "^4.1.1",
-    "web-push": "^3.2.1",
-    "babel-core": "^6.21.0",
-    "babel-loader": "^6.2.10",
-    "css-loader": "^0.26.1",
-    "extract-text-webpack-plugin": "^1.0.1",
-    "file-loader": "^0.9.0",
-    "html-loader": "^0.4.4",
-    "html-webpack-plugin": "^2.26.0",
+    "style-ext-html-webpack-plugin": "^3.0.8",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
+    "web-push": "^3.2.1",
     "webpack": "2.2.0-rc.3"
+  },
+  "devDependencies": {
+    "html-webpack-inline-source-plugin": "0.0.6"
   }
 }
