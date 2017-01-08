@@ -34,9 +34,7 @@
     "mongodb-promise": "^0.0.4",
     "request": "^2.78.0",
     "request-promise": "^4.1.1",
-    "web-push": "^3.2.1"
-  },
-  "devDependencies": {
+    "web-push": "^3.2.1",
     "babel-core": "^6.21.0",
     "babel-loader": "^6.2.10",
     "css-loader": "^0.26.1",
