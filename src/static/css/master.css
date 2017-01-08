@@ -60,11 +60,11 @@ body {
     width: 100%;
 }
 
-.banner>i {
+.banner > img {
     margin-left: auto;
     cursor: pointer;
-    font-size: 20px;
     padding-right: 50px;
+    height: 30px;
 }
 
 .post-container {
@@ -115,11 +115,11 @@ hr {
     width: 50%;
 }
 
-.fa-toggle-up {
+.goto-top > img {
     position: fixed;
     bottom: 30px;
     right: 30px;
-    font-size: 60px;
+    height: 60px;
     cursor: pointer;
     color: #ccc;
 }

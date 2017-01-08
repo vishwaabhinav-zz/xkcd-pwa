@@ -101,7 +101,7 @@ window.onload = function init() {
       scrollTo(0, 0);
     });
 
-    document.querySelector('.fa-random').addEventListener('click', function _goToRandom(e) {
+    document.querySelector('.banner > img').addEventListener('click', function _goToRandom(e) {
       do {
         var rand = Math.floor(Math.random() * length);
         var post = document.getElementById(rand);
