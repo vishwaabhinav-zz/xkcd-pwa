@@ -97,7 +97,7 @@ window.onload = function init() {
   }
 
   function _addEventListeners() {
-    document.querySelector('.fa-toggle-up').addEventListener('click', function _goToTop(e) {
+    document.querySelector('.goto-top > img').addEventListener('click', function _goToTop(e) {
       scrollTo(0, 0);
     });
 
