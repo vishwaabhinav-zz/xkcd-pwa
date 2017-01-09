@@ -11,6 +11,9 @@ const XKCD = 'http://xkcd.com/';
 const JSON_URL = 'info.0.json';
 const connStr = 'mongodb://heroku_97mjvv9b:l7qh0eg92ln8echsl6no1e6en0@ds145997.mlab.com:45997/heroku_97mjvv9b';
 
+var db,
+  collection;
+
 function _fetchJSON() {
   var options = {
     url: `${XKCD}/${JSON_URL}`,
@@ -33,46 +36,75 @@ function _notify(title) {
   return request(options);
 }
 
-function _insert(json) {
+function _checkIfUpdated(json) {
+  console.log(json);
   return new Promise((resolve, reject) => {
-    mongo.connect(connStr, (err, db) => {
-      let collections = db.collection('records');
-      if (!json.img) {
-        reject('Image not present');
+    collection.find({
+      'num': json.num
+    }).toArray((err, items) => {
+      if (err) {
+        reject(err);
       }
-
-      http.get(json.img, (response) => {
-        if (response.statusCode !== 200) {
-          reject(`invalid status code ${response.statusCode}`);
-        }
-        response.on('error', err => {
-          reject(`http error ${err}`);
-        });
-
-        sizeOf(response, (err, result) => {
-          if (err) {
-            reject(err);
-          }
-          json.height = (result && result.height) || 0;
-          json.width = (result && result.width) || 0;
-
-          collections.update({
-            'num': json.num
-          }, json, {
-            upsert: true
-          }, (err, result) => {
-            if (err) {
-              reject(err);
-            }
-
-            resolve(_notify(json.title));
-          });
-        });
-      }).on('error', err => reject(err));
-    })
+      if (items.length) {
+        return reject('already exists');
+      } else {
+        return resolve(json);
+      }
+    });
   });
 }
 
-_fetchJSON()
-  .then(_insert)
-  .catch(err => console.log(err));
+function _insert(json) {
+  return new Promise((resolve, reject) => {
+    if (!json.img) {
+      reject('Image not present');
+    }
+
+    http.get(json.img, (response) => {
+      if (response.statusCode !== 200) {
+        reject(`invalid status code ${response.statusCode}`);
+      }
+      response.on('error', err => {
+        reject(`http error ${err}`);
+      });
+
+      sizeOf(response, (err, result) => {
+        if (err) {
+          reject(err);
+        }
+        json.height = (result && result.height) || 0;
+        json.width = (result && result.width) || 0;
+
+        collection.update({
+          'num': json.num
+        }, json, {
+          upsert: true
+        }, (err, result) => {
+          if (err) {
+            reject(err);
+          }
+
+          resolve(_notify(json.title));
+        });
+      });
+    }).on('error', err => reject(err));
+  })
+}
+
+mongo.connect(connStr, (err, database) => {
+  if (!err) {
+    db = database;
+    collection = db.collection('records');
+
+    _fetchJSON()
+      .then(_checkIfUpdated)
+      .then(_insert)
+      .then(() => {
+        db.close();
+      })
+      .catch(err => {
+        console.log(err);
+        db.close();
+      });
+  }
+});
