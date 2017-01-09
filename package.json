@@ -4,10 +4,10 @@
   "description": "PWA for xkcd.com",
   "main": "index.html",
   "scripts": {
+    "postinstall": "webpack -p",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/index.js",
-    "webpack": "webpack",
-    "postinstall": "webpack -p"
+    "webpack": "webpack"
   },
   "engines": {
     "node": "6.1.0"

@@ -1,4 +1,4 @@
-var CACHE_NAME = 'static-v10';
+var CACHE_NAME = 'static-v11';
 
 function _addToCache(method, resource, url) {
     if (method === 'addAll') {
@@ -35,9 +35,6 @@ function updateCache(req) {
 
 self.addEventListener('install', function _installHandler(e) {
     e.waitUntil(_addToCache('addAll', [
-        '/css/master.css',
-        '/js/app.js',
-        '/views/templates.html',
         '/']));
 });
 
