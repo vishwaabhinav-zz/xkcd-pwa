@@ -4,40 +4,72 @@
 
 const Bottleneck = require("bottleneck");
 const request = require('request-promise');
-const mp = require('mongodb-promise');
+const mongo = require('mongodb').MongoClient;
+const sizeOf = require('imagesize');
+const http = require('http');
 
 var limiter = new Bottleneck(1000, 15);
 
 const XKCD = 'http://xkcd.com/';
 const JSON_URL = 'info.0.json';
-var promiseArr = [];
-var db;
+var db,
+  collection;
 
-mp.MongoClient.connect('mongodb://heroku_97mjvv9b:l7qh0eg92ln8echsl6no1e6en0@ds145997.mlab.com:45997/heroku_97mjvv9b')
-  .then(database => {
+mongo.connect('mongodb://heroku_97mjvv9b:l7qh0eg92ln8echsl6no1e6en0@ds145997.mlab.com:45997/heroku_97mjvv9b',
+  (err, database) => {
+    if (err) {
+      console.error(err);
+    }
     db = database;
+    collection = db.collection('records');
 
     _fetchJSON()
       .then(_getLatest)
       .then(_getAll)
       .then(arr => console.log(arr))
       .catch(err => {
-        console.log(data);
         console.error(err.message);
       });
-  }).fail(err => console.log(err));
+  });
 
 function _insert(json) {
   // console.log(json.num);
-  return db.collection('records')
-    .then(col => col.update({
-      'num': json.num
-    }, json, {
-      upsert: true
-    }))
-    .then(result => {
-      console.log(result);
-    });
+  return new Promise((resolve, reject) => {
+    if (!json.img) {
+      reject('Image not present');
+    }
+    http.get(json.img, (response) => {
+      if (response.statusCode !== 200) {
+        console.log(`status code: ${response.statusCode}`);
+        reject(`invalid status code ${response.statusCode}`);
+      }
+      response.on('error', err => {
+        console.log('http error', err);
+        reject(`http error ${err}`);
+      });
+
+      sizeOf(response, (err, result) => {
+        if (err) {
+          console.log('sizeOf', err);
+          reject(err);
+        }
+        json.height = (result && result.height) || 0;
+        json.width = (result && result.width) || 0;
+
+        collection.update({
+          'num': json.num
+        }, json, {
+          upsert: true
+        }, (err, result) => {
+          if (err) {
+            reject(err);
+          }
+          resolve(result);
+        });
+      });
+    }).on('error', err => reject(err));
+
+  });
 }
 
 function _getLatest(json) {
@@ -54,14 +86,14 @@ function _createCache(num) {
 function _getAll(latest) {
   for (var i = 1; i < latest; i++) {
     limiter.schedule(_createCache, i)
-      .catch(function (err) {
+      .catch(function(err) {
         console.log(`${this} : ${err.message}`);
       }.bind(i));
   }
 
-  limiter.on('empty', () => {
-    db.close();
-  });
+  // limiter.on('empty', () => {
+  //   db.close();
+  // });
 
 }
 

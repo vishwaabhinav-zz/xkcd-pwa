@@ -3,10 +3,13 @@
 'use strict';
 
 const request = require('request-promise');
-const mp = require('mongodb-promise');
+const mongo = require('mongodb').MongoClient;
+const sizeOf = require('imagesize');
+const http = require('http');
 
 const XKCD = 'http://xkcd.com/';
 const JSON_URL = 'info.0.json';
+const connStr = 'mongodb://heroku_97mjvv9b:l7qh0eg92ln8echsl6no1e6en0@ds145997.mlab.com:45997/heroku_97mjvv9b';
 
 function _fetchJSON() {
   var options = {
@@ -30,39 +33,46 @@ function _notify(title) {
   return request(options);
 }
 
-function _checkIfUpdated(json) {
-  console.log(json);
-  return mp.MongoClient.connect('mongodb://heroku_97mjvv9b:l7qh0eg92ln8echsl6no1e6en0@ds145997.mlab.com:45997/heroku_97mjvv9b')
-    .then(db => {
-      return db.collection('records')
-        .then(col => col.find({
-          'num': json.num
-        }).toArray())
-        .then(items => {
-          if (items.length) {
-            return Promise.reject('already exists');
-          } else {
-            return Promise.resolve(json);
-          }
-        });
-    });
-}
-
 function _insert(json) {
-  mp.MongoClient.connect('mongodb://heroku_97mjvv9b:l7qh0eg92ln8echsl6no1e6en0@ds145997.mlab.com:45997/heroku_97mjvv9b')
-    .then(db => {
-      return db.collection('records')
-        .then(col => col.insert(json))
-        .then(result => {
-          console.log(result);
-          return _notify(json.title);
-        })
-        .then(() => db.close());
+  return new Promise((resolve, reject) => {
+    mongo.connect(connStr, (err, db) => {
+      let collections = db.collection('records');
+      if (!json.img) {
+        reject('Image not present');
+      }
+
+      http.get(json.img, (response) => {
+        if (response.statusCode !== 200) {
+          reject(`invalid status code ${response.statusCode}`);
+        }
+        response.on('error', err => {
+          reject(`http error ${err}`);
+        });
+
+        sizeOf(response, (err, result) => {
+          if (err) {
+            reject(err);
+          }
+          json.height = (result && result.height) || 0;
+          json.width = (result && result.width) || 0;
+
+          collections.update({
+            'num': json.num
+          }, json, {
+            upsert: true
+          }, (err, result) => {
+            if (err) {
+              reject(err);
+            }
+
+            resolve(_notify(json.title));
+          });
+        });
+      }).on('error', err => reject(err));
     })
-    .fail(err => console.log(err));
+  });
 }
 
 _fetchJSON()
-  .then(_checkIfUpdated)
   .then(_insert)
   .catch(err => console.log(err));
