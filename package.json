@@ -41,6 +41,7 @@
     "html-webpack-plugin": "^2.26.0",
     "imagesize": "^1.0.0",
     "mongodb": "^2.2.19",
+    "mongodb-promise": "^0.0.4",
     "request": "^2.78.0",
     "request-promise": "^4.1.1",
     "style-ext-html-webpack-plugin": "^3.0.8",
