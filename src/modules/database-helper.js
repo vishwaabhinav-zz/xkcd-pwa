@@ -22,7 +22,7 @@ module.exports = {
         return db.collection('records')
             .then(col => {
                 let promise;
-                let limit = 100;
+                let limit = 20;
                 if (!current || current === -1) {
                     promise = col.find();
                     limit = 10;
