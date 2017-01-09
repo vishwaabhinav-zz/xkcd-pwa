@@ -76,6 +76,8 @@ window.onload = function init() {
       clone.querySelector('h3 > a').href = '#' + post.num;
       clone.querySelector('h3 > a').id = post.num;
       clone.querySelector('.alt').textContent = post.alt;
+      clone.querySelector('img').setAttribute('width', post.width);
+      clone.querySelector('img').setAttribute('height', post.height);
       // clone.querySelector('.img').style.background = 'url(' + post.img + ') bottom center no-repeat';
       clone.querySelector('img').onload = function showPost() {
         this.closest('.post-wrapper').style.display = '';
