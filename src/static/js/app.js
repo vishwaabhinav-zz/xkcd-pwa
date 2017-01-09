@@ -1,6 +1,6 @@
 /*global firebase*/
 'use strict';
-
+require('whatwg-fetch');
 require('../css/master.css');
 require('../views/templates.html');
 

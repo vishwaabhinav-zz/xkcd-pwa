@@ -29,9 +29,8 @@
       "type": "image/png"
     },
     {
-      "src": "images/large.png",
-      "sizes": "192x192",
-      "type": "image/png"
+      "src": "images/xkcd.svg",
+      "sizes": "192x192"
     }
   ]
 }

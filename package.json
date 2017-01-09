@@ -37,6 +37,7 @@
     "file-loader": "^0.9.0",
     "firebase-admin": "^4.0.4",
     "html-loader": "^0.4.4",
+    "html-webpack-inline-source-plugin": "0.0.6",
     "html-webpack-plugin": "^2.26.0",
     "mongodb-promise": "^0.0.4",
     "request": "^2.78.0",
@@ -46,7 +47,7 @@
     "url-loader": "^0.5.7",
     "web-push": "^3.2.1",
     "webpack": "2.2.0-rc.3",
-    "html-webpack-inline-source-plugin": "0.0.6"
+    "whatwg-fetch": "^2.0.1"
   },
   "devDependencies": {}
 }
