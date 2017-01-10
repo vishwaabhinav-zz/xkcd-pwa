@@ -1,6 +1,7 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 const extractCSS = new ExtractTextPlugin('master.css');
 
@@ -41,5 +42,10 @@ module.exports = {
         }),
         new HtmlWebpackInlineSourcePlugin(),
         extractCSS,
+        new CopyPlugin([{
+            from: 'src/static/images'
+        }, {
+            from: 'src/static/manifest.json'
+        }])
     ]
 }
