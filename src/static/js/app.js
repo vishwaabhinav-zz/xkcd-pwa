@@ -122,7 +122,15 @@ window.onload = function init() {
       } while (true);
     });
 
-    document.addEventListener('scroll', throttle(fetchNext));
+    document.addEventListener('scroll', throttle(function checkScrollPosAndFetchNext() {
+      var scrollTop = window.pageYOffset;
+      var clientHeight = document.documentElement.clientHeight;
+      var bodyHeight = document.documentElement.scrollHeight;
+
+      if ((scrollTop + clientHeight) / bodyHeight > 0.9) {
+        fetchNext();
+      }
+    }));
   }
 
   function _registerServiceWorker() {
