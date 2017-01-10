@@ -75,6 +75,7 @@ window.onload = function init() {
       clone.querySelector('h3 > a').textContent = post.title;
       clone.querySelector('h3 > a').href = '#' + post.num;
       clone.querySelector('h3 > a').id = post.num;
+      clone.querySelector('span > a').href = 'https://xkcd.com/' + post.num;
       clone.querySelector('.alt').textContent = post.alt;
       clone.querySelector('img').setAttribute('width', post.width);
       clone.querySelector('img').setAttribute('height', post.height);

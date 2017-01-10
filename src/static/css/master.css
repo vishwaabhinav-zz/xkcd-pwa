@@ -95,6 +95,12 @@ body {
     flex-direction: column;
 }
 
+.post span > a {
+    font-size: 0.8em;
+    text-decoration: none;
+    color: #0076f7;
+}
+
 .post .img {
     flex: 2 1 auto;
     max-width: 90%;
@@ -122,3 +128,4 @@ hr {
     cursor: pointer;
     color: #ccc;
 }
+
