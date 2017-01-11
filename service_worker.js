@@ -39,7 +39,7 @@ self.addEventListener('install', function _installHandler(e) {
 });
 
 self.addEventListener('activate', function _activateHandler(e) {
-    caches.delete(CACHE_NAME);
+    return self.clients.claim();
 });
 
 self.addEventListener('fetch', function _fetchHandler(e) {
