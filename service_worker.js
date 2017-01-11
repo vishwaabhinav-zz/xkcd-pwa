@@ -10,13 +10,14 @@ function _addToCache(method, resource, url) {
             cache[method](url, resource);
         });
     }
+    return Promise.resolve(true);
 }
 
 function _getFromCache(req) {
     return caches.open(CACHE_NAME)
         .then(cache => {
             return caches.match(req).then(response => {
-                if (response) {
+                if (response && !req.url.includes('current=-1')) {
                     return response;
                 }
                 return fetch(req);
@@ -34,8 +35,11 @@ function updateCache(req) {
 }
 
 self.addEventListener('install', function _installHandler(e) {
-    e.waitUntil(_addToCache('addAll', [
-        '/']));
+    e.waitUntil(() => _addToCache('addAll', ['/']).then(() => self.skipWaiting()));
+});
+
+self.addEventListener('activate', function _activateHandler(e) {
+    caches.delete(CACHE_NAME);
 });
 
 self.addEventListener('fetch', function _fetchHandler(e) {
