@@ -1,4 +1,4 @@
-var CACHE_NAME = 'static-v15';
+var CACHE_NAME = 'static-v16';
 
 function _addToCache(method, resource, url) {
     if (method === 'addAll') {

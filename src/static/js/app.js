@@ -82,6 +82,8 @@ window.onload = function init() {
       // clone.querySelector('.img').style.background = 'url(' + post.img + ') bottom center no-repeat';
       clone.querySelector('img').onload = function showPost() {
         this.closest('.post-wrapper').style.display = '';
+        this.removeAttribute('width');
+        this.removeAttribute('height');
       };
       clone.querySelector('img').src = imgSrc;
       clone.querySelector('img').setAttribute('alt', post.alt);
