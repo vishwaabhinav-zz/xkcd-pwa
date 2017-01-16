@@ -7,12 +7,20 @@ const dbHelper = require('./modules/database-helper');
 const firebaseHelper = require('./modules/firebase-helper');
 
 const app = express();
-
+const env = process.env.NODE_ENV || 'development';
 const PORT = process.env.PORT || 3000;
 const XKCD = 'http://xkcd.com/';
 
 var db;
 
+if (env === 'production') {
+    app.use(function forceSSL(req, res, next) {
+        if (req.headers['x-forwarded-proto'] !== 'https') {
+            return res.redirect(['https://', req.get('Host'), req.url].join(''));
+        }
+        return next();
+    });
+}
 app.use(compression());
 app.use(parser.json());
 app.use(parser.urlencoded({
