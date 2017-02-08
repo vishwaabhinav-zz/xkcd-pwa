@@ -6,7 +6,7 @@ const Bottleneck = require("bottleneck");
 const request = require('request-promise');
 const mongo = require('mongodb').MongoClient;
 const sizeOf = require('imagesize');
-const http = require('http');
+const https = require('https');
 
 var limiter = new Bottleneck(1000, 15);
 
@@ -38,7 +38,7 @@ function _insert(json) {
     if (!json.img) {
       reject('Image not present');
     }
-    http.get(json.img, (response) => {
+    https.get(json.img, (response) => {
       if (response.statusCode !== 200) {
         console.log(`status code: ${response.statusCode}`);
         reject(`invalid status code ${response.statusCode}`);

@@ -5,7 +5,7 @@
 const request = require('request-promise');
 const mongo = require('mongodb').MongoClient;
 const sizeOf = require('imagesize');
-const http = require('http');
+const https = require('https');
 
 const XKCD = 'http://xkcd.com/';
 const JSON_URL = 'info.0.json';
@@ -60,7 +60,7 @@ function _insert(json) {
       reject('Image not present');
     }
 
-    http.get(json.img, (response) => {
+    https.get(json.img, (response) => {
       if (response.statusCode !== 200) {
         reject(`invalid status code ${response.statusCode}`);
       }
